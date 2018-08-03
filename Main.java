@@ -31,7 +31,7 @@ public class Main extends Application {
 
 	//player
 	private Node player;
-	private Point2D playerVelocity = new Point2D(0,0);
+	private int playerVelocityY = 0;
 	private boolean canJump = true;
 
 	//pixelvärden
@@ -52,7 +52,7 @@ public class Main extends Application {
 					case '0':
 						break;
 					case '1':
-						Node platform = createEntity(j*60, i*60, 60,60, Color.BROWN);
+						Node platform = createEntity(j*60, i*60, 60,60, Color.GREEN);
 						platforms.add(platform);
 						break;
 					case '2':
@@ -77,7 +77,6 @@ public class Main extends Application {
 	}
 
 	private void update() {
-
 		//check for keyboard input
 		if (isPressed(KeyCode.UP) && player.getTranslateY() >= 5) {
 			jumpPlayer();
@@ -90,19 +89,19 @@ public class Main extends Application {
 		}
 
 		//apply gravity to player
-		if (playerVelocity.getY() < 10) {
-			playerVelocity = playerVelocity.add(0,1);
+		if (playerVelocityY < 16) {
+			playerVelocityY++;
 		}
 
 		//move the player
-		movePlayerY((int)playerVelocity.getY());
+		movePlayerY(playerVelocityY);
 
 		//coins
 		for (Node coin : coins) {
 			if (player.getBoundsInParent().intersects(coin.getBoundsInParent())) {
 				coin.getProperties().put("alive", false);
-				dialogEvent = true;
-				running = false;
+				//dialogEvent = true;
+				//running = false;
 			}
 		}
 
@@ -147,6 +146,7 @@ public class Main extends Application {
 						if (player.getTranslateY() + 40 == platform.getTranslateY()) {
 							player.setTranslateY(player.getTranslateY() - 1);
 							canJump = true;
+							playerVelocityY = 0;
 							return;
 						}
 					}
@@ -163,7 +163,7 @@ public class Main extends Application {
 
 	private void jumpPlayer() {
 		if (canJump) {
-			playerVelocity = playerVelocity.add(0, -30);
+			playerVelocityY = -20;
 			canJump = false;
 		}
 	}
